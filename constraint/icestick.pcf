@@ -1,0 +1,53 @@
+# ##############################################################################
+
+# iCEcube PCF
+
+# Version:            2012.09SP1.22498
+
+# File Generated:     May 1 2013 11:36:30
+
+# Family & Device:    iCE40HX1K
+
+# Package:            TQ144
+
+# ##############################################################################
+
+###IOSet List 6
+set_io LED1 99
+set_io LED2 98
+set_io LED3 97
+set_io LED4 96
+set_io LED5 95
+
+set_io i_pclk 21
+
+# PMOD
+#set_io PMOD02 78
+#set_io PMOD03 79
+#set_io PMOD04 8
+#set_io PMOD05 81
+#set_io PMOD06 87
+#set_io PMOD07 88
+#set_io PMOD08 90
+#set_io PMOD09 91
+
+# VGA
+
+set_io o_r    78 # PMOD02
+set_io o_g    79 # PMOD03
+set_io o_b    80 # PMOD04
+
+set_io o_hsync 87 # PMOD06
+set_io o_vsync 88 # PMOD07
+
+
+# GPIO
+
+set_io i_pio_10     44 -pullup yes # PIO2_10
+set_io i_pio_11     45 -pullup yes # PIO2_11
+set_io i_pio_12     47 -pullup yes # PIO2_12
+set_io i_pio_13     48 -pullup yes # PIO2_13
+set_io i_pio_14     56 -pullup yes # PIO2_14
+set_io i_pio_15     60 -pullup yes # PIO2_15
+set_io i_pio_16     61 -pullup yes # PIO2_16
+set_io i_pio_17     62 -pullup yes # PIO2_17
