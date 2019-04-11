@@ -11,7 +11,9 @@ module Ball #(parameter paddle_margin = 30,
  
  output reg o_r,
  output reg o_g,
- output reg o_b
+ output reg o_b,
+ output reg [3:0] o_score1,
+ output reg [3:0] o_score2
 );
 
 `define BALL_X_SIZE   10'd8
@@ -41,15 +43,31 @@ end
 
 // X Rebound logic
 always @(posedge frame_index) begin
-    if (x_dir == `RIGHT) begin
-        if ((x_pos + `BALL_X_SIZE + `BALL_SPEED) >= screen_width || 
-            (x_pos >= (screen_width - paddle_margin - `BALL_X_SIZE) && y_pos >= i_paddle2_y && y_pos < (i_paddle2_y + paddle_height + `BALL_Y_SIZE)) )
+    if ((x_pos + `BALL_X_SIZE + `BALL_SPEED) >= screen_width)
+    begin
+        x_pos <= screen_width / 2;
+        o_score1 <= o_score1 + 1;
+
+        if (o_score1 > 4'd9)
+        begin
+            o_score1 <= 4'd9;
+        end
+    end else if (x_pos < `BALL_SPEED)
+    begin
+        x_pos <= screen_width / 2;
+        o_score2 <= o_score2 + 1;
+
+        if (o_score2 > 4'd9)
+        begin
+            o_score2 <= 4'd9;
+        end
+    end else if (x_dir == `RIGHT) begin
+        if (x_pos >= (screen_width - paddle_margin - `BALL_X_SIZE) && y_pos >= i_paddle2_y && y_pos < (i_paddle2_y + paddle_height + `BALL_Y_SIZE))
             x_dir <= `LEFT;
         else
             x_pos <= x_pos + `BALL_SPEED;
     end else begin
-        if (x_pos < `BALL_SPEED ||
-            (x_pos <= (paddle_margin + paddle_width) && y_pos >= i_paddle1_y && y_pos < (i_paddle1_y + paddle_height + `BALL_Y_SIZE)))
+        if (x_pos <= (paddle_margin + paddle_width) && y_pos >= i_paddle1_y && y_pos < (i_paddle1_y + paddle_height + `BALL_Y_SIZE))
             x_dir <= `RIGHT;
         else
             x_pos <= x_pos - `BALL_SPEED;

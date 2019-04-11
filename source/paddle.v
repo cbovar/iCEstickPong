@@ -15,7 +15,7 @@ module Paddle #(parameter paddle_margin = 30,
  output reg o_b
 );
 
-always @(i_pixel_x, i_pixel_y, visible_area)
+always @(i_pixel_x, i_pixel_y, visible_area, i_y_paddle1_pos, i_y_paddle2_pos)
 begin
     if (visible_area)
     begin

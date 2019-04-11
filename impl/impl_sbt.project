@@ -4,7 +4,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2017.08.27940 - Bui
 ProjectName=impl
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=../source/vga.v=work,../source/top.v=work,../source/ball.v=work,../source/paddle.v=work,../source/control.v=work,../source/debounce.v=work
+ProjectVFiles=../source/vga.v=work,../source/top.v=work,../source/control.v=work,../source/debounce.v=work,../source/font.v,../source/font_rom.v,../source/ball.v=work,../source/paddle.v=work
 ProjectCFiles=
 CurImplementation=impl_Implmnt
 Implementations=impl_Implmnt

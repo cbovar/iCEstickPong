@@ -19,17 +19,17 @@ module top(
   input i_pio_13  // left paddle 2
 	);
 
-  localparam hbp = 144;
-  localparam hfp = 784;
-  localparam vbp = 31;
-  localparam vfp = 511;
+  localparam hbp = 10'd144;
+  localparam hfp = 10'd784;
+  localparam vbp = 10'd31;
+  localparam vfp = 10'd511;
   
-  localparam SCREEN_WIDTH = 640;
-  localparam SCREEN_HEIGHT = 480;
+  localparam SCREEN_WIDTH = 10'd640;
+  localparam SCREEN_HEIGHT = 10'd480;
 
-  localparam PADDLE_MARGIN = 30;
-  localparam PADDLE_HEIGHT = 100;
-  localparam PADDLE_WIDTH = 10;
+  localparam PADDLE_MARGIN = 10'd30;
+  localparam PADDLE_HEIGHT = 10'd100;
+  localparam PADDLE_WIDTH = 10'd10;
   
   wire clk;
 
@@ -76,17 +76,17 @@ module top(
 // Controls
  wire w_left1, w_right1, w_reset, w_left2, w_right2;
 
- debounce debounce_inst1(.i_input(i_pio_17), .i_clk(i_pclk), .o_output(w_reset));
- debounce debounce_inst2(.i_input(i_pio_16), .i_clk(i_pclk), .o_output(w_right1));
- debounce debounce_inst3(.i_input(i_pio_15), .i_clk(i_pclk), .o_output(w_left1));
- debounce debounce_inst4(.i_input(i_pio_14), .i_clk(i_pclk), .o_output(w_right2));
- debounce debounce_inst5(.i_input(i_pio_13), .i_clk(i_pclk), .o_output(w_left2));
+ debounce debounce_inst1(.i_input(i_pio_17), .i_clk(clk), .o_output(w_reset));
+ debounce debounce_inst2(.i_input(i_pio_16), .i_clk(clk), .o_output(w_right1));
+ debounce debounce_inst3(.i_input(i_pio_15), .i_clk(clk), .o_output(w_left1));
+ debounce debounce_inst4(.i_input(i_pio_14), .i_clk(clk), .o_output(w_right2));
+ debounce debounce_inst5(.i_input(i_pio_13), .i_clk(clk), .o_output(w_left2));
 
- assign LED1 = ~w_right1;
- assign LED2 = ~w_left2;
- assign LED3 = ~w_left1;
- assign LED4 = ~w_right2;
- assign LED5 = ~w_reset;
+//  assign LED1 = ~w_right1;
+//  assign LED2 = ~w_left2;
+//  assign LED3 = ~w_left1;
+//  assign LED4 = ~w_right2;
+//  assign LED5 = ~w_reset;
 
  wire [9:0] w_control1, w_control2;
 
@@ -103,6 +103,7 @@ module top(
 
  // Ball
  wire w_r2, w_g2, w_b2;
+ wire [3:0] w_score1, w_score2; 
  Ball   #(
           .paddle_margin(PADDLE_MARGIN),
           .paddle_width(PADDLE_WIDTH),
@@ -117,7 +118,9 @@ module top(
                 .i_paddle2_y(w_control2),
                 .o_r(w_r2),
                 .o_g(w_g2),
-                .o_b(w_b2)
+                .o_b(w_b2),
+                .o_score1(w_score1),
+                .o_score2(w_score2)
                );
 
 // Paddle
@@ -139,8 +142,61 @@ module top(
                 .o_b(w_b3)
                );
 
- assign o_r =  w_r2| w_r3;
- assign o_g =  w_g2| w_g3;
- assign o_b =  w_b2| w_b3;
+// Text
+wire [6:0] w_data1;
+font_rom font_rom_inst1(
+                       .i_clk(clk),
+                       .i_addr(w_score1),
+                       .o_data(w_data1)
+                      );
+
+localparam FONT1_X = 10'd160;
+localparam FONT_Y = 10'd40;
+localparam FONT2_X = 10'd480;
+
+wire w_r4, w_g4, w_b4;
+font font_inst1(
+              .i_font_x(FONT1_X),
+              .i_font_y(FONT_Y),
+              .i_pixel_x(w_pixel_x),
+              .i_pixel_y(w_pixel_y),
+              .visible_area(w_visible_area),
+              .i_digit(w_data1),
+              .o_r(w_r4),
+              .o_g(w_g4),
+              .o_b(w_b4)
+             );
+
+wire [6:0] w_data2;
+font_rom font_rom_inst2(
+                       .i_clk(clk),
+                       .i_addr(w_score2),
+                       .o_data(w_data2)
+                      );
+
+wire w_r5, w_g5, w_b5;
+font font_inst2(
+              .i_font_x(FONT2_X),
+              .i_font_y(FONT_Y),
+              .i_pixel_x(w_pixel_x),
+              .i_pixel_y(w_pixel_y),
+              .visible_area(w_visible_area),
+              .i_digit(w_data2),
+              .o_r(w_r5),
+              .o_g(w_g5),
+              .o_b(w_b5)
+             );
+
+
+ assign o_r =  w_r2| w_r3| w_r4| w_r5;
+ assign o_g =  w_g2| w_g3| w_g4| w_g5;
+ assign o_b =  w_b2| w_b3| w_b4| w_b5;
+
+assign LED1 = 0;
+assign LED2 = 0;
+assign LED3 = 0;
+assign LED4 = 0;
+assign LED5 = 0;
+
 
 endmodule

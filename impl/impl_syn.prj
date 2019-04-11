@@ -4,10 +4,12 @@
 
 add_file -verilog -lib work "../source/vga.v" 
 add_file -verilog -lib work "../source/top.v" 
-add_file -verilog -lib work "../source/ball.v" 
-add_file -verilog -lib work "../source/paddle.v" 
 add_file -verilog -lib work "../source/control.v" 
 add_file -verilog -lib work "../source/debounce.v" 
+add_file -verilog -lib work "../source/font.v" 
+add_file -verilog -lib work "../source/font_rom.v" 
+add_file -verilog -lib work "../source/ball.v" 
+add_file -verilog -lib work "../source/paddle.v" 
 #implementation: "impl_Implmnt"
 impl -add impl_Implmnt -type fpga
 
