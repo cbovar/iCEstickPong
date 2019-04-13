@@ -1,4 +1,4 @@
-module Control
+module Control#(parameter screen_height = 480)
 (
  input i_clk,
  input i_reset,
@@ -19,7 +19,7 @@ module Control
     always @(posedge slow_clk)
     begin
         if (i_reset)
-            control1 <= 240;
+            control1 <= screen_height / 2;
         else
         if (i_control1_left)
             control1 <= control1 + 1;
@@ -31,7 +31,7 @@ module Control
     always @(posedge slow_clk)
     begin
         if (i_reset)
-            control2 <= 240;
+            control2 <= screen_height / 2;
         else
         if (i_control2_left)
             control2 <= control2 + 1;
