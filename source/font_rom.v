@@ -3,6 +3,7 @@ module font_rom (input i_clk,
                  output reg [6:0] o_data);
 
   reg [3:0] addr_reg; 
+  reg [6:0] o_data /* synthesis syn_romstyle = "block_rom" */;
 
   // body
   always @(posedge i_clk) begin
@@ -22,12 +23,12 @@ module font_rom (input i_clk,
       4'd8: o_data = 7'b1111111;
       4'd9: o_data = 7'b0101111;
       
-      4'd10: o_data = 7'b0110110;
-      4'd11: o_data = 7'b0110110;
-      4'd12: o_data = 7'b0110110;
-      4'd13: o_data = 7'b0110110;
-      4'd14: o_data = 7'b0110110;
-      4'd15: o_data = 7'b0110110;
+      4'd10: o_data = 7'b0100010;
+      4'd11: o_data = 7'b0100010;
+      4'd12: o_data = 7'b0100010;
+      4'd13: o_data = 7'b0100010;
+      4'd14: o_data = 7'b0100010;
+      4'd15: o_data = 7'b0100010;
     endcase
   end
 
