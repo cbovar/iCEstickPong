@@ -27,14 +27,15 @@ module Ball #(parameter paddle_margin = 30,
 `define DOWN        1'b0
 `define UP          1'b1
 
-reg [9:0] x_delta = `BALL_SPEED;
 reg [9:0] x_pos;
 reg [9:0] y_pos;
-
 reg [9:0] x_pos_next = screen_width / 2;
 reg [9:0] y_pos_next = screen_height / 2;
 reg [3:0] score1_next = 0;
 reg [3:0] score2_next = 0;
+reg [9:0] x_delta;
+reg [9:0] x_delta_next = `BALL_SPEED;
+reg [9:0] hit_position_y;
 
 reg x_dir, x_dir_next = `RIGHT;
 reg y_dir, y_dir_next = `UP;
@@ -51,6 +52,7 @@ begin
         o_score2 <= 0;
         x_dir <= `RIGHT;
         y_dir <= `UP;
+        x_delta <=  `BALL_SPEED;
      end   
   else
      begin
@@ -61,6 +63,7 @@ begin
         x_dir <= x_dir_next;
         x_dir <= x_dir_next;
         y_dir <= y_dir_next;
+        x_delta <= x_delta_next;
      end
 end
 
@@ -72,6 +75,7 @@ begin
     score1_next = o_score1;
     score2_next = o_score2;
     x_dir_next = x_dir;
+    x_delta_next = x_delta;
 
     if ((x_pos + `BALL_X_SIZE + `BALL_SPEED) >= screen_width)
     begin
@@ -93,14 +97,28 @@ begin
     end else if (frame_tick)
         if (x_dir == `RIGHT) begin
             if (x_pos >= (screen_width - paddle_margin - `BALL_X_SIZE) && y_pos >= i_paddle2_y && y_pos < (i_paddle2_y + paddle_height + `BALL_Y_SIZE))
+            begin
                 x_dir_next = `LEFT;
-            else
-                x_pos_next = x_pos + `BALL_SPEED;
+                hit_position_y = y_pos - i_paddle2_y;
+
+                if (hit_position_y < (paddle_height / 5) || hit_position_y > (4 * paddle_height / 5))
+                    x_delta_next = 3 * `BALL_SPEED; // ball was received using an extremity of the paddle => speed up
+                else
+                    x_delta_next = `BALL_SPEED;
+            end else
+                x_pos_next = x_pos + x_delta;
         end else begin
             if (x_pos <= (paddle_margin + paddle_width) && y_pos >= i_paddle1_y && y_pos < (i_paddle1_y + paddle_height + `BALL_Y_SIZE))
+            begin
                 x_dir_next = `RIGHT;
-            else
-                x_pos_next = x_pos - `BALL_SPEED;
+                hit_position_y = y_pos - i_paddle2_y;
+
+                if (hit_position_y < (paddle_height / 5) || hit_position_y > (4 * paddle_height / 5))
+                    x_delta_next = 3 * `BALL_SPEED; // ball was received using an extremity of the paddle => speed up
+                else
+                    x_delta_next = `BALL_SPEED;
+            end else
+                x_pos_next = x_pos - x_delta;
     end
 end
 
