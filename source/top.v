@@ -90,7 +90,9 @@ module top(
 
  wire [9:0] w_control1, w_control2;
 
- Control control_inst(
+ Control #(
+           .screen_height(SCREEN_HEIGHT)
+          ) control_inst(
                 .i_clk(clk),
                 .i_reset(~w_reset),
                 .i_control1_left(~w_left1),
@@ -111,11 +113,13 @@ module top(
           .screen_width(SCREEN_WIDTH),
           .screen_height(SCREEN_HEIGHT)
           ) ball_inst(
+                .i_clk(clk),
                 .i_pixel_x(w_pixel_x),
                 .i_pixel_y(w_pixel_y),
                 .visible_area(w_visible_area),
                 .i_paddle1_y(w_control1),
                 .i_paddle2_y(w_control2),
+                .i_reset(~w_reset),
                 .o_r(w_r2),
                 .o_g(w_g2),
                 .o_b(w_b2),

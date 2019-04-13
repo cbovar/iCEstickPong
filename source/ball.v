@@ -3,11 +3,13 @@ module Ball #(parameter paddle_margin = 30,
               parameter paddle_height = 50,
               parameter screen_width = 640,
               parameter screen_height = 480)
-(input [9:0] i_pixel_x,
+(input i_clk,
+ input [9:0] i_pixel_x,
  input [9:0] i_pixel_y,
  input visible_area,
  input [9:0] i_paddle1_y,
  input [9:0] i_paddle2_y,
+ input i_reset,
  
  output reg o_r,
  output reg o_g,
@@ -25,68 +27,100 @@ module Ball #(parameter paddle_margin = 30,
 `define DOWN        1'b0
 `define UP          1'b1
 
-reg [9:0] x_pos = screen_width / 2;
-reg [9:0] y_pos = screen_height / 2; 
+reg [9:0] x_delta = `BALL_SPEED;
+reg [9:0] x_pos;
+reg [9:0] y_pos;
 
-reg x_dir;
-reg y_dir;
+reg [9:0] x_pos_next = screen_width / 2;
+reg [9:0] y_pos_next = screen_height / 2;
+reg [3:0] score1_next = 0;
+reg [3:0] score2_next = 0;
 
-reg frame_index;
+reg x_dir, x_dir_next = `RIGHT;
+reg y_dir, y_dir_next = `UP;
 
-always @(i_pixel_x or i_pixel_y)
+assign frame_tick = (i_pixel_x == 0) && (i_pixel_y == 481);
+
+always @(posedge i_clk, posedge i_reset)
 begin
-    if (i_pixel_x == 0 && i_pixel_y == 0)
-        frame_index = 1;
-    else
-        frame_index = 0;
+  if (i_reset)
+     begin
+        x_pos <= screen_width / 2;
+        y_pos <= screen_height / 2; 
+        o_score1 <= 0;
+        o_score2 <= 0;
+        x_dir <= `RIGHT;
+        y_dir <= `UP;
+     end   
+  else
+     begin
+        x_pos <= x_pos_next;
+        y_pos <= y_pos_next;
+        o_score1 <= score1_next;
+        o_score2 <= score2_next;
+        x_dir <= x_dir_next;
+        x_dir <= x_dir_next;
+        y_dir <= y_dir_next;
+     end
 end
 
+
 // X Rebound logic
-always @(posedge frame_index) begin
+always @*   
+begin
+    x_pos_next = x_pos;
+    score1_next = o_score1;
+    score2_next = o_score2;
+    x_dir_next = x_dir;
+
     if ((x_pos + `BALL_X_SIZE + `BALL_SPEED) >= screen_width)
     begin
-        x_pos <= screen_width / 2;
-        o_score1 <= o_score1 + 1;
-
-        if (o_score1 > 4'd9)
+        x_pos_next = screen_width / 2;
+        
+        if (o_score1 < 4'd10)
         begin
-            o_score1 <= 4'd9;
+            score1_next = o_score1 + 1;
         end
+
     end else if (x_pos < `BALL_SPEED)
     begin
-        x_pos <= screen_width / 2;
-        o_score2 <= o_score2 + 1;
+        x_pos_next = screen_width / 2;
 
-        if (o_score2 > 4'd9)
+        if (o_score1 < 4'd10)
         begin
-            o_score2 <= 4'd9;
+            score2_next = o_score2 + 1;
         end
-    end else if (x_dir == `RIGHT) begin
-        if (x_pos >= (screen_width - paddle_margin - `BALL_X_SIZE) && y_pos >= i_paddle2_y && y_pos < (i_paddle2_y + paddle_height + `BALL_Y_SIZE))
-            x_dir <= `LEFT;
-        else
-            x_pos <= x_pos + `BALL_SPEED;
-    end else begin
-        if (x_pos <= (paddle_margin + paddle_width) && y_pos >= i_paddle1_y && y_pos < (i_paddle1_y + paddle_height + `BALL_Y_SIZE))
-            x_dir <= `RIGHT;
-        else
-            x_pos <= x_pos - `BALL_SPEED;
+    end else if (frame_tick)
+        if (x_dir == `RIGHT) begin
+            if (x_pos >= (screen_width - paddle_margin - `BALL_X_SIZE) && y_pos >= i_paddle2_y && y_pos < (i_paddle2_y + paddle_height + `BALL_Y_SIZE))
+                x_dir_next = `LEFT;
+            else
+                x_pos_next = x_pos + `BALL_SPEED;
+        end else begin
+            if (x_pos <= (paddle_margin + paddle_width) && y_pos >= i_paddle1_y && y_pos < (i_paddle1_y + paddle_height + `BALL_Y_SIZE))
+                x_dir_next = `RIGHT;
+            else
+                x_pos_next = x_pos - `BALL_SPEED;
     end
 end
 
 // Y Rebound logic
-always @(posedge frame_index) begin
-    if (y_dir == `DOWN) begin
-        if ((y_pos + `BALL_Y_SIZE + `BALL_SPEED) >= screen_height)
-            y_dir <= `UP;
-        else
-            y_pos <= y_pos + `BALL_SPEED;
-    end else begin
-        if (y_pos < `BALL_SPEED)
-            y_dir <= `DOWN;
-        else
-            y_pos <= y_pos - `BALL_SPEED;
-    end
+always @* begin
+    y_pos_next = y_pos;
+    y_dir_next = y_dir;
+
+    if (frame_tick)
+        if (y_dir == `DOWN) begin
+            if ((y_pos + `BALL_Y_SIZE + `BALL_SPEED) >= screen_height)
+                y_dir_next = `UP;
+            else
+                y_pos_next = y_pos + `BALL_SPEED;
+        end else begin
+            if (y_pos < `BALL_SPEED)
+                y_dir_next = `DOWN;
+            else
+                y_pos_next = y_pos - `BALL_SPEED;
+        end
 end
 
 // Display logic
