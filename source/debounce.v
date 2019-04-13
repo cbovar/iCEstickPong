@@ -9,7 +9,7 @@ endmodule
 
 // Slow clock enable for debouncing button 
 module clock_enable(input i_clk, output slow_clk);
-    reg [16:0]counter=0;
+    reg [15:0] counter = 0;
     always @(posedge i_clk)
     begin
   		counter <= (counter >= 59999) ? 0 : counter + 1;
