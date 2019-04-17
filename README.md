@@ -1,2 +1,24 @@
 # iCEstickPong
-Pong on a iCEstick FPGA board
+
+This is my first FPGA project.
+
+## Demo
+
+![Video](https://github.com/cbovar/iCEstickPong/blob/master/img/video.gif)
+
+
+## Board
+
+![Board](https://github.com/cbovar/iCEstickPong/blob/master/img/breadboard.jpg)
+
+## Controllers
+
+![Controllers](https://github.com/cbovar/iCEstickPong/blob/master/img/controllers.jpg)
+
+## Pin constraints
+
+![Floor planner](https://github.com/cbovar/iCEstickPong/blob/master/img/pin%20constraints.png)
+
+## Floor planner
+
+![Floor planner](https://github.com/cbovar/iCEstickPong/blob/master/img/floor%20planner.png)
