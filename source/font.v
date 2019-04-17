@@ -3,7 +3,7 @@ module font(
             input [9:0] i_font_y,
             input [9:0] i_pixel_x,
             input [9:0] i_pixel_y,
-            input visible_area,
+            input i_visible_area,
             input [6:0] i_digit,
 
             output reg o_r,
@@ -16,9 +16,9 @@ module font(
 `define DIGIT_SEGMENT_PARAM2  10'd4
 
 // Display logic
-always @(i_pixel_x, i_pixel_y, i_digit, visible_area, i_font_x, i_font_y)
+always @(i_pixel_x, i_pixel_y, i_digit, i_visible_area, i_font_x, i_font_y)
 begin
-    if (visible_area)
+    if (i_visible_area)
     begin
         if (
             (i_digit[0] == 1 && i_pixel_x >= (i_font_x + `DIGIT_SEGMENT_PARAM2) && i_pixel_x < (i_font_x + `DIGIT_SEGMENT_PARAM1) && i_pixel_y >= i_font_y && i_pixel_y < ( i_font_y + `DIGIT_SEGMENT_PARAM2)) ||

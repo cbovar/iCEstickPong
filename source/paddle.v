@@ -6,7 +6,7 @@ module Paddle #(parameter paddle_margin = 30,
 (
  input [9:0] i_pixel_x,
  input [9:0] i_pixel_y,
- input visible_area,
+ input i_visible_area,
  input [9:0] i_y_paddle1_pos,
  input [9:0] i_y_paddle2_pos,
 
@@ -15,9 +15,9 @@ module Paddle #(parameter paddle_margin = 30,
  output reg o_b
 );
 
-always @(i_pixel_x, i_pixel_y, visible_area, i_y_paddle1_pos, i_y_paddle2_pos)
+always @(i_pixel_x, i_pixel_y, i_visible_area, i_y_paddle1_pos, i_y_paddle2_pos)
 begin
-    if (visible_area)
+    if (i_visible_area)
     begin
         if ( i_pixel_x >= paddle_margin && i_pixel_x < (paddle_margin + paddle_width) 
           && i_pixel_y > i_y_paddle1_pos && i_pixel_y < (i_y_paddle1_pos + paddle_height))
