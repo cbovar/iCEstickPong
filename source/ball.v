@@ -6,7 +6,7 @@ module Ball #(parameter paddle_margin = 30,
 (input i_clk,
  input [9:0] i_pixel_x,
  input [9:0] i_pixel_y,
- input visible_area,
+ input i_visible_area,
  input [9:0] i_paddle1_y,
  input [9:0] i_paddle2_y,
  input i_reset,
@@ -69,7 +69,7 @@ end
 
 
 // X Rebound logic
-always @*   
+always @*
 begin
     x_pos_next = x_pos;
     score1_next = o_score1;
@@ -77,7 +77,7 @@ begin
     x_dir_next = x_dir;
     x_delta_next = x_delta;
 
-    if ((x_pos + `BALL_X_SIZE + `BALL_SPEED) >= screen_width)
+    if ((x_pos + `BALL_X_SIZE + `BALL_SPEED) >= (screen_width - paddle_margin + paddle_width))
     begin
         x_pos_next = screen_width / 2;
         
@@ -86,7 +86,7 @@ begin
             score1_next = o_score1 + 1;
         end
 
-    end else if (x_pos < `BALL_SPEED)
+    end else if (x_pos < (`BALL_SPEED + paddle_margin - paddle_width))
     begin
         x_pos_next = screen_width / 2;
 
@@ -111,7 +111,7 @@ begin
             if (x_pos <= (paddle_margin + paddle_width) && y_pos >= i_paddle1_y && y_pos < (i_paddle1_y + paddle_height + `BALL_Y_SIZE))
             begin
                 x_dir_next = `RIGHT;
-                hit_position_y = y_pos - i_paddle2_y;
+                hit_position_y = y_pos - i_paddle1_y;
 
                 if (hit_position_y < (paddle_height / 5) || hit_position_y > (4 * paddle_height / 5))
                     x_delta_next = 3 * `BALL_SPEED; // ball was received using an extremity of the paddle => speed up
@@ -123,7 +123,8 @@ begin
 end
 
 // Y Rebound logic
-always @* begin
+always @*
+begin
     y_pos_next = y_pos;
     y_dir_next = y_dir;
 
@@ -142,9 +143,9 @@ always @* begin
 end
 
 // Display logic
-always @(i_pixel_x, i_pixel_y, x_pos, y_pos, visible_area)
+always @(i_pixel_x, i_pixel_y, x_pos, y_pos, i_visible_area)
 begin
-    if (visible_area)
+    if (i_visible_area)
     begin
 
         if ( i_pixel_x >= x_pos && i_pixel_x < (`BALL_X_SIZE + x_pos) 
