@@ -10,6 +10,7 @@ add_file -verilog -lib work "../source/font.v"
 add_file -verilog -lib work "../source/font_rom.v" 
 add_file -verilog -lib work "../source/ball.v" 
 add_file -verilog -lib work "../source/paddle.v" 
+add_file -verilog -lib work "../source/pattern.v" 
 #implementation: "impl_Implmnt"
 impl -add impl_Implmnt -type fpga
 

@@ -65,13 +65,15 @@ module top(
  
   // Draw pattern
 
-//  wire w_r1, w_g1, w_b1;  
-//  Pattern pattern_inst(.i_hc(w_hc),
-//                       .i_vc(w_vc),
-//                       .o_r(w_r1),
-//                       .o_g(w_g1),
-//                       .o_b(w_b1)
-//                      );
+ wire w_r1, w_g1, w_b1;  
+ Pattern pattern_inst(.i_clk(clk),
+                      .i_pixel_x(w_pixel_x),
+                      .i_pixel_y(w_pixel_y),
+                      .i_visible_area(w_visible_area),
+                      .o_r(w_r1),
+                      .o_g(w_g1),
+                      .o_b(w_b1)
+                     );
 
 // Controls
  wire w_left1, w_right1, w_reset, w_left2, w_right2;
@@ -116,7 +118,7 @@ module top(
                 .i_clk(clk),
                 .i_pixel_x(w_pixel_x),
                 .i_pixel_y(w_pixel_y),
-                .visible_area(w_visible_area),
+                .i_visible_area(w_visible_area),
                 .i_paddle1_y(w_control1),
                 .i_paddle2_y(w_control2),
                 .i_reset(~w_reset),
@@ -138,7 +140,7 @@ module top(
           ) paddle_inst(
                 .i_pixel_x(w_pixel_x),
                 .i_pixel_y(w_pixel_y),
-                .visible_area(w_visible_area),
+                .i_visible_area(w_visible_area),
                 .i_y_paddle1_pos(w_control1),
                 .i_y_paddle2_pos(w_control2),
                 .o_r(w_r3),
@@ -164,7 +166,7 @@ font font_inst1(
               .i_font_y(FONT_Y),
               .i_pixel_x(w_pixel_x),
               .i_pixel_y(w_pixel_y),
-              .visible_area(w_visible_area),
+              .i_visible_area(w_visible_area),
               .i_digit(w_data1),
               .o_r(w_r4),
               .o_g(w_g4),
@@ -184,7 +186,7 @@ font font_inst2(
               .i_font_y(FONT_Y),
               .i_pixel_x(w_pixel_x),
               .i_pixel_y(w_pixel_y),
-              .visible_area(w_visible_area),
+              .i_visible_area(w_visible_area),
               .i_digit(w_data2),
               .o_r(w_r5),
               .o_g(w_g5),
@@ -192,9 +194,9 @@ font font_inst2(
              );
 
 
- assign o_r =  w_r2| w_r3| w_r4| w_r5;
- assign o_g =  w_g2| w_g3| w_g4| w_g5;
- assign o_b =  w_b2| w_b3| w_b4| w_b5;
+ assign o_r =  w_r1 | w_r2 | w_r3 | w_r4 | w_r5;
+ assign o_g =  w_g1 | w_g2 | w_g3 | w_g4 | w_g5;
+ assign o_b =  w_b1 | w_b2 | w_b3 | w_b4 | w_b5;
 
 assign LED1 = 0;
 assign LED2 = 0;
