@@ -15,7 +15,7 @@ This is my first FPGA project.
 
 ![Controllers](https://github.com/cbovar/iCEstickPong/blob/master/img/controllers.jpg)
 
-One of the controllers had ad additional button to reset the game.
+One of the controllers has an additional button to reset the game.
 
 ## Pin constraints
 
